@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    environment {
+
+        GIT_URL = "https://github.com"
+        GIT_PROJECT_URL = "/freefly310/helloword.git"
+        GIT_CREDENTIALS_ID = "5580528e-9a66-48bd-ad3c-d796f54984a8"
+
+    }
+
+    parameters {
+        string(defaultValue:"master", description: '代码分支',name: 'BRANCH')
+
+        booleanParam(name: 'INIT_DEPLOY', defaultValue: false, description: '是否初次部署')
+    }
+
+    stages {
+        stage('代码克隆') {
+            steps {
+
+                cleanWs()
+				checkout scmGit(branches: [[name: "${params.BRANCH}"]], extensions: [], userRemoteConfigs: [[url: "${GIT_URL}${GIT_PROJECT_URL}"]])
+                sh """
+					echo "拉取代码完成"
+					ls -la
+				"""
+
+			}
+        }
+
+    }
+
+}
